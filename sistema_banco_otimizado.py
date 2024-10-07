@@ -4,9 +4,8 @@ def menu():
     [1] Depositar
     [2] Sacar
     [3] Extrato
-    [4] Nova conta
-    [5] Listar contas
-    [6] Novo usuário
+    [4] Novo usuário
+    [5] Nova conta
     [0] Sair
 
     => """
@@ -19,6 +18,7 @@ def depositar(saldo, valor, extrato, /):
 
         saldo += valor
         extrato += f"Depósito: R$ {valor:.2f}\n"
+        print("Operação sucedida!")
 
     else:
         print("Operação falhou! O valor informado é inválido.")
@@ -46,6 +46,7 @@ def sacar(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
         saldo -= valor
         extrato += f"Saque: R$ {valor:.2f}\n"
         numero_saques += 1
+        print("Operação sucedida!")
 
     else:
         print("Operação falhou! O valor informado é inválido.")
@@ -59,11 +60,33 @@ def exibir_extrato(saldo, /, *, extrato):
     print(f"\nSaldo: R$ {saldo:.2f}")
     print("==========================================")
 
-def criar_conta():
-    a =1
+def criar_usuario(usuarios):
+    cpf = input("Informe o CPF (apenas números): ")
+    usuario = filtrar_usuario(cpf, usuarios)
 
-def criar_usuario():
-    b=2
+    if usuario:
+        print("CPF já cadastrado!")
+    
+    nome = input("Informe o nome: ")
+    data_nascimento = input("Informe a data de nascimento (dd-mm-aaaa): ")
+    endereco = input("Informe o endereço (logradouro, número - bairro - cidade/estado): ")
+    usuarios.append({"nome": nome, "data_nascimento": data_nascimento, "cpf": cpf, "endereco": endereco})
+    print("Usuário cadastrado com sucesso!")
+
+def filtrar_usuario(cpf, usuarios):
+    usuarios_filtrados = [usuario for usuario in usuarios if usuario["cpf"] == cpf]
+    return usuarios_filtrados[0] if usuarios_filtrados else None
+
+def criar_conta(agencia, numero_conta, usuarios):
+    cpf = input("Informe o CPF do usuário: ")
+    usuario = filtrar_usuario(cpf, usuarios)
+
+    if usuario:
+        print("Conta criada com sucesso!")
+        return {"agencia": agencia, "numero_conta": numero_conta, "usuario": usuario}
+        
+    else:
+        print("CPF não encontrado")
 
 def main():
     saldo = 0
@@ -71,6 +94,9 @@ def main():
     extrato = ""
     numero_saques = 0
     LIMITE_SAQUES = 3
+    usuarios = []
+    contas = []
+    AGENCIA = "0001"   
 
     while True:
 
@@ -95,13 +121,19 @@ def main():
             exibir_extrato(saldo, extrato = extrato)
 
         elif opcao == "4":
-            criar_conta()
-
-        elif opcao == "5":
-            criar_usuario()
+            criar_usuario(usuarios)
         
+        elif opcao == "5":
+            numero_conta = len(contas) + 1
+            conta = criar_conta(AGENCIA, numero_conta, usuarios)
+
+            if conta:
+                contas.append(conta)
+
         elif opcao == "0":
             break
 
         else:
             print("Operação inválida, por favor selecione novamente a operação desejada.")
+
+main()
