@@ -13,7 +13,7 @@ def menu():
 
     return input(menu)
 
-def depositar(saldo, valor, extrato):
+def depositar(saldo, valor, extrato, /):
 
     if valor > 0:
 
@@ -22,18 +22,16 @@ def depositar(saldo, valor, extrato):
 
     else:
         print("Operação falhou! O valor informado é inválido.")
+    
+    return saldo, extrato
 
-def sacar():
-
-    global saldo 
-    global extrato
-    global numero_saques
+def sacar(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
 
     excedeu_saldo = valor > saldo
 
     excedeu_limite = valor > limite
 
-    excedeu_saques = numero_saques >= LIMITE_SAQUES
+    excedeu_saques = numero_saques >= limite_saques
 
     if excedeu_saldo:
         print("Operação falhou! Você não tem saldo suficiente.")
@@ -52,11 +50,20 @@ def sacar():
     else:
         print("Operação falhou! O valor informado é inválido.")
 
-def exibir_extrato():
+    return saldo, extrato
+
+def exibir_extrato(saldo, /, *, extrato):
+
     print("\n================ EXTRATO ================")
     print("Não foram realizadas movimentações." if not extrato else extrato)
     print(f"\nSaldo: R$ {saldo:.2f}")
     print("==========================================")
+
+def criar_conta():
+    a =1
+
+def criar_usuario():
+    b=2
 
 def main():
     saldo = 0
@@ -80,11 +87,18 @@ def main():
                 valor = valor,
                 extrato = extrato,
                 limite = limite,
-
-                valor, extrato)
+                numero_saques = numero_saques,
+                limite_saques = LIMITE_SAQUES,)
+            
 
         elif opcao == "3":
             exibir_extrato(saldo, extrato = extrato)
+
+        elif opcao == "4":
+            criar_conta()
+
+        elif opcao == "5":
+            criar_usuario()
         
         elif opcao == "0":
             break
